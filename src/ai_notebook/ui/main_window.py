@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QFileDialog,
     QMessageBox,
+    QComboBox,
 )
 
 from ai_notebook.services.ollama_client import OllamaClient
@@ -28,6 +29,20 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout()
         central_widget.setLayout(main_layout)
+
+        main_layout.addWidget(QLabel("Model"))
+
+        self.model_selector = QComboBox()
+        self.model_selector.addItems([
+            "mistral:latest",
+            "gemma4:latest",
+            "qwen3.6:latest",
+            "gpt-oss:20b",
+            "gpt-oss:120b",
+        ])
+
+        self.model_selector.setCurrentText("mistral:latest")
+        main_layout.addWidget(self.model_selector)
 
         self.open_document_button = QPushButton("Open Document")
         self.open_document_button.clicked.connect(self.open_document)
