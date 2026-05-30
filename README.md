@@ -30,3 +30,11 @@ The first version is intentionally small:
 ## Development Status
 
 Idea / initial setup.
+
+
+## Run the App
+
+```bash
+source .venv/bin/activate
+PYTHONPATH=src python -m ai_notebook.main
+
