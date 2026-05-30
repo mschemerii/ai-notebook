@@ -33,6 +33,12 @@ class MainWindow(QMainWindow):
         self.open_document_button.clicked.connect(self.open_document)
         main_layout.addWidget(self.open_document_button)
 
+        self.document_info_label = QLabel(
+            "Loaded: No document selected"
+        )
+
+        main_layout.addWidget(self.document_info_label)
+
         main_layout.addWidget(QLabel("Document Preview"))
 
         self.document_preview = QTextEdit()
@@ -48,7 +54,6 @@ class MainWindow(QMainWindow):
             "Ask a question about the document..."
         )
         self.question_input.returnPressed.connect(self.ask_question)	
-
 
         self.ask_button = QPushButton("Ask")
         self.ask_button.clicked.connect(self.ask_question)
@@ -73,7 +78,7 @@ class MainWindow(QMainWindow):
             self,
             "Open Document",
             "",
-            "Text Files (*.txt .md);;All Files (*)",
+                        "Text Files (*.txt *.md);;All Files (*)",
         )
 
         if not file_path:
@@ -92,6 +97,10 @@ class MainWindow(QMainWindow):
                 return
 
             self.document_preview.setPlainText(content)
+            self.document_info_label.setText(
+                f"Loaded: {file_path.split('/')[-1]} "
+                f"({len(content):,} characters)"
+            )
 
         except UnicodeDecodeError:
             QMessageBox.critical(
