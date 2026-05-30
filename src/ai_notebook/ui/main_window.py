@@ -11,10 +11,14 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+from ai_notebook.services.ollama_client import OllamaClient
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.ollama_client = OllamaClient()
 
         self.setWindowTitle("AI Notebook")
         self.resize(1000, 700)
@@ -43,8 +47,11 @@ class MainWindow(QMainWindow):
         self.question_input.setPlaceholderText(
             "Ask a question about the document..."
         )
+        self.question_input.returnPressed.connect(self.ask_question)	
+
 
         self.ask_button = QPushButton("Ask")
+        self.ask_button.clicked.connect(self.ask_question)
 
         question_layout.addWidget(self.question_input)
         question_layout.addWidget(self.ask_button)
@@ -66,7 +73,7 @@ class MainWindow(QMainWindow):
             self,
             "Open Document",
             "",
-            "Text Files (*.txt *.md);;All Files (*)",
+            "Text Files (*.txt .md);;All Files (*)",
         )
 
         if not file_path:
@@ -98,3 +105,31 @@ class MainWindow(QMainWindow):
                 "File Error",
                 f"Could not open file:\n{error}",
             )
+
+    def ask_question(self):
+        document_text = self.document_preview.toPlainText()
+        question = self.question_input.text()
+
+        if not document_text.strip():
+            self.answer_output.setPlainText(
+                "Please load a document first."
+            )
+            return
+
+        if not question.strip():
+            self.answer_output.setPlainText(
+                "Please enter a question."
+            )
+            return
+
+        self.answer_output.setPlainText("Thinking...")
+
+        try:
+            answer = self.ollama_client.ask(
+                document_text,
+                question,
+            )
+            self.answer_output.setPlainText(answer)
+
+        except ConnectionError as error:
+            self.answer_output.setPlainText(str(error))
