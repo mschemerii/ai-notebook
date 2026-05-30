@@ -1,12 +1,18 @@
-from PySide6.QtWidgets import QApplication, QMainWindow
 import sys
 
+from PySide6.QtWidgets import QApplication
 
-app = QApplication(sys.argv)
+from ai_notebook.ui.main_window import MainWindow
 
-window = QMainWindow()
-window.setWindowTitle("AI Notebook")
-window.resize(800, 600)
-window.show()
 
-sys.exit(app.exec())
+def main():
+    app = QApplication(sys.argv)
+
+    window = MainWindow()
+    window.show()
+
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()
